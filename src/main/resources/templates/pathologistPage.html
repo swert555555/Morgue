@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Морг</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 10px;
+        display: grid;
+        justify-content: center;
+        align-items: center;
+        overflow-y: auto;
+    }
+</style>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Список тел</h2>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>ФИО</th>
+                    <th>Возраст</th>
+                    <th>Пол</th>
+                    <th>Дата поступления</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="corpse : ${corpses}">
+                    <td th:text="${corpse.name}"></td>
+                    <td th:text="${corpse.age}"></td>
+                    <td th:text="${corpse.gender.name}"></td>
+                    <td th:text="${#temporals.format(corpse.receiptDate, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-outline-primary" data-toggle="collapse"
+                                th:data-target="'#editFormCorpse' + ${corpse.id}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                 class="bi bi-pen" viewBox="0 0 16 16">
+                                <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z"/>
+                            </svg>
+                        </button>
+                        <form th:action="@{|/pathologist/corpses/${corpse.id}/delete|}" method="post"
+                              style="display:inline;">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                     class="bi bi-trash3" viewBox="0 0 16 16">
+                                    <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+                                </svg>
+                            </button>
+                        </form>
+                    </td>
+                    <div class="collapse ms-2 me-auto" th:id="'editFormCorpse' + ${corpse.id}">
+                        <br>
+                        <form th:action="@{|/pathologist/corpses/${corpse.id}/edit|}" method="post"
+                              style="display:inline;">
+                            <div class="form-group">
+                                <label for="corpse_name_edit">ФИО</label>
+                                <input type="text" class="form-control" th:value="${corpse.name}" name="name"
+                                       id="corpse_name_edit"
+                                       required>
+                            </div>
+                            <div class="form-group">
+                                <label for="corpse_age_edit">Возраст</label>
+                                <input type="number" class="form-control" th:value="${corpse.age}" name="age"
+                                       id="corpse_age_edit"
+                                       required>
+                            </div>
+                            <div class="form-group">
+                                <label for="corpse_gender_edit">Пол</label>
+                                <select class="form-control" th:value="${corpse.gender}" name="gender.id"
+                                        id="corpse_gender_edit"
+                                        required>
+                                    <option th:each="gender : ${genders}" th:value="${gender.id}"
+                                            th:text="${gender.name}"></option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-sm btn-outline-success">Сохранить</button>
+                        </form>
+                    </div>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <br>
+    <hr>
+    <br>
+
+    <div class="row">
+        <div class="col-md-4">
+            <h2>Причины смерти</h2>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Название</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="causeOfDeath : ${causesOfDeath}">
+                    <td th:text="${causeOfDeath.name}"></td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-outline-primary" data-toggle="collapse"
+                                th:data-target="'#editFormCauseOfDeath' + ${causeOfDeath.id}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                 class="bi bi-pen" viewBox="0 0 16 16">
+                                <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z"/>
+                            </svg>
+                        </button>
+                        <form th:action="@{|/pathologist/causesOfDeath/${causeOfDeath.id}/delete|}" method="post"
+                              style="display:inline;">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                     class="bi bi-trash3" viewBox="0 0 16 16">
+                                    <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+                                </svg>
+                            </button>
+                        </form>
+                    </td>
+                    <div class="collapse ms-2 me-auto" th:id="'editFormCauseOfDeath' + ${causeOfDeath.id}">
+                        <br>
+                        <form th:action="@{|/pathologist/causesOfDeath/${causeOfDeath.id}/edit|}" method="post"
+                              style="display:inline;">
+                            <div class="form-group">
+                                <label for="causesOfDeath_name_edit">Название</label>
+                                <input type="text" class="form-control" th:value="${causeOfDeath.name}" name="name"
+                                       id="causesOfDeath_name_edit"
+                                       required>
+                            </div>
+                            <button type="submit" class="btn btn-sm btn-outline-success">Сохранить</button>
+                        </form>
+                    </div>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-md-8">
+            <h2>Свидетельства о смерти</h2>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Тело</th>
+                    <th>Причина смерти</th>
+                    <th>Место смерти</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="deathCertificate : ${deathCertificates}">
+                    <td th:text="${deathCertificate.corpse.name}"></td>
+                    <td th:text="${deathCertificate.causeOfDeath.name}"></td>
+                    <td th:text="${deathCertificate.placeOfDeath.name}"></td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-outline-primary" data-toggle="collapse"
+                                th:data-target="'#editFormDeathCertificate' + ${deathCertificate.id}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                 class="bi bi-pen" viewBox="0 0 16 16">
+                                <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z"/>
+                            </svg>
+                        </button>
+                        <form th:action="@{|/pathologist/deathCertificates/${deathCertificate.id}/delete|}"
+                              method="post"
+                              style="display:inline;">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                     class="bi bi-trash3" viewBox="0 0 16 16">
+                                    <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+                                </svg>
+                            </button>
+                        </form>
+                    </td>
+                    <div class="collapse ms-2 me-auto" th:id="'editFormDeathCertificate' + ${deathCertificate.id}">
+                        <br>
+                        <form th:action="@{|/pathologist/deathCertificates/${deathCertificate.id}/edit|}" method="post"
+                              style="display:inline;">
+                            <div class="form-group">
+                                <label for="deathCertificate_corpse_edit">Тело</label>
+                                <select class="form-control" th:value="${deathCertificate.corpse}" name="corpse.id"
+                                        id="deathCertificate_corpse_edit"
+                                        required>
+                                    <option th:each="corpse : ${corpses}" th:value="${corpse.id}"
+                                            th:text="${corpse.name}"></option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="causeOfDeath_edit">Причина смерти</label>
+                                <select class="form-control" th:value="${deathCertificate.causeOfDeath}"
+                                        name="causeOfDeath.id" id="causeOfDeath_edit"
+                                        required>
+                                    <option th:each="causeOfDeath : ${causesOfDeath}" th:value="${causeOfDeath.id}"
+                                            th:text="${causeOfDeath.name}"></option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="placeOfDeath_edit">Место смерти</label>
+                                <select class="form-control" th:value="${deathCertificate.placeOfDeath}"
+                                        name="placeOfDeath.id" id="placeOfDeath_edit"
+                                        required>
+                                    <option th:each="city : ${cities}" th:value="${city.id}"
+                                            th:text="${city.name}"></option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-sm btn-outline-success">Сохранить</button>
+                        </form>
+                    </div>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <br>
+    <hr>
+    <br>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Аутопсии</h2>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Тело</th>
+                    <th>Дата аутопсии</th>
+                    <th>Результаты</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="autopsy : ${autopsies}">
+                    <td th:text="${autopsy.corpse.name}"></td>
+                    <td th:text="${#temporals.format(autopsy.autopsyDate, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td th:text="${autopsy.findings}"></td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-outline-primary" data-toggle="collapse"
+                                th:data-target="'#editFormAutopsy' + ${autopsy.id}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                 class="bi bi-pen" viewBox="0 0 16 16">
+                                <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z"/>
+                            </svg>
+                        </button>
+                        <form th:action="@{|/pathologist/autopsies/${autopsy.id}/delete|}" method="post"
+                              style="display:inline;">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                     class="bi bi-trash3" viewBox="0 0 16 16">
+                                    <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+                                </svg>
+                            </button>
+                        </form>
+                    </td>
+                    <div class="collapse ms-2 me-auto" th:id="'editFormAutopsy' + ${autopsy.id}">
+                        <br>
+                        <form th:action="@{|/pathologist/autopsies/${autopsy.id}/edit|}" method="post"
+                              style="display:inline;">
+                            <div class="form-group">
+                                <label for="corpse_edit">Тело</label>
+                                <select class="form-control" th:value="${autopsy.corpse}" name="corpse.id"
+                                        id="corpse_edit" required>
+                                    <option th:each="corpse : ${corpses}" th:value="${corpse.id}"
+                                            th:text="${corpse.name}"></option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="autopsyDate_edit">Дата аутопсии</label>
+                                <input type="datetime-local" class="form-control"
+                                       th:value="${#temporals.format(autopsy.autopsyDate, 'dd/MM/yyyy HH:mm')}"
+                                       name="autopsyDate" id="autopsyDate_edit"
+                                       required>
+                            </div>
+                            <div class="form-group">
+                                <label for="findings_edit">Результаты</label>
+                                <textarea class="form-control" th:value="${autopsy.findings}" name="findings"
+                                          id="findings_edit"
+                                          required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-sm btn-outline-success">Сохранить</button>
+                        </form>
+                    </div>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <br>
+    <hr>
+    <br>
+
+    <div class="row align-items-end mb-3">
+        <div class="col container">
+            <form action="/pathologist/causesOfDeath/add" method="post" th:object="${causeOfDeath}">
+                <div class="form-group">
+                    <label for="causesOfDeath_name_add">Название</label>
+                    <input type="text" class="form-control" id="causesOfDeath_name_add" name="name" required>
+                </div>
+                <button type="submit" class="btn btn-outline-success">Добавить</button>
+            </form>
+        </div>
+    </div>
+    <div class="row align-items-end mb-3">
+        <div class="col container">
+            <form action="/pathologist/deathCertificates/add" method="post" th:object="${deathCertificate}">
+                <div class="form-group">
+                    <label for="corpse_add">Тело</label>
+                    <select class="form-control" name="corpse.id" id="corpse_add" required>
+                        <option th:each="corpse : ${corpses}" th:value="${corpse.id}"
+                                th:text="${corpse.name}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="causeOfDeath">Причина смерти</label>
+                    <select class="form-control" name="causeOfDeath.id" id="causeOfDeath" required>
+                        <option th:each="causeOfDeath : ${causesOfDeath}" th:value="${causeOfDeath.id}"
+                                th:text="${causeOfDeath.name}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="placeOfDeath">Место смерти</label>
+                    <select class="form-control" name="placeOfDeath.id" id="placeOfDeath" required>
+                        <option th:each="city : ${cities}" th:value="${city.id}"
+                                th:text="${city.name}"></option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-outline-success">Добавить</button>
+            </form>
+        </div>
+    </div>
+    <div class="row align-items-end mb-3">
+        <div class="col container">
+            <form action="/pathologist/autopsies/add" method="post" th:object="${autopsy}">
+                <div class="form-group">
+                    <label for="corpse">Тело</label>
+                    <select class="form-control" name="corpse.id" id="corpse" required>
+                        <option th:each="corpse : ${corpses}" th:value="${corpse.id}"
+                                th:text="${corpse.name}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="autopsyDate">Дата аутопсии</label>
+                    <input type="datetime-local" class="form-control" id="autopsyDate" name="autopsyDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="findings">Результаты</label>
+                    <textarea class="form-control" id="findings" name="findings" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-outline-success">Добавить</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>

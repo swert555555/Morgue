@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Ошибка</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="container">
+    <h1>Произошла ошибка</h1>
+    <p>Извините, но что-то пошло не так. Пожалуйста, попробуйте еще раз позже.</p>
+
+    <!-- Отображение информации об ошибке, если она доступна -->
+    <div th:if="${error}">
+        <h2>Детали ошибки:</h2>
+        <p th:text="${error}"></p>
+    </div>
+
+    <a href="/">Вернуться на главную страницу</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Все пользователи</title>
+    <!-- Подключение Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="body">
+<div class="container mt-5 text-center">
+    <table class="table mb-3">
+        <thead>
+        <tr>
+            <th>Логин</th>
+            <th>Роли</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="element_user : ${user_list}">
+            <td th:text="${element_user.username}"></td>
+            <td th:text="${element_user.role}"></td>
+            <td>
+                <a class="btn" th:href="'/admin/users/' + ${element_user.idUser}">Подробнее...</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <a href="/registration" class="btn">Добавить нового пользователя</a>
+
+</div>
+
+<!-- Подключение Bootstrap JS и зависимостей -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

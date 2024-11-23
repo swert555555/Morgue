@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Главная</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+          background-color: #f4f4f4;
+          margin: 0;
+          padding: 10px;
+          display: grid;
+          justify-content: center;
+
+          align-items: center;
+          height: 100vh;
+        }
+    </style>
+</head>
+<body>
+<div>
+
+
+    <div class="container text-center">
+        <h3 th:text="${name}"/>
+        <h5 th:text="'Ваша роль: ' + ${role}"></h5>
+    </div>
+    <div class="row align-items-center">
+        <div class="col col-12 text-center" th:if="${role=='loader' || role=='pathologist'}">
+            <a th:href="@{|/${role}|}" class="btn btn-outline-dark">Перейти в морг</a>
+        </div>
+    </div>
+    <div class="row align-items-center">
+        <div class="col col-12 text-center" th:if="${role=='admin'}">
+            <a href="/admin/users" class="btn btn-outline-dark">Управление персоналом</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
