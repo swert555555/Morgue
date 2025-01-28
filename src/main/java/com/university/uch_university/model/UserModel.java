@@ -6,12 +6,13 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 public class UserModel {
     @Id
     @GeneratedValue
-    private Long idUser;
+    private UUID idUser;
 
     private String username;
     @NotBlank(message = "Пароль не может быть пустым")
@@ -24,9 +25,13 @@ public class UserModel {
     @Enumerated(EnumType.STRING)
     private RoleEnum role;
 
+    @OneToOne
+    @JoinColumn(name = "employee_id", unique = true, nullable = true)
+    private Employee employee;
+
     public UserModel(){}
 
-    public UserModel(Long idUser, String username, String password, boolean active, RoleEnum role) {
+    public UserModel(UUID idUser, String username, String password, boolean active, RoleEnum role) {
         this.idUser = idUser;
         this.username = username;
         this.password = password;
@@ -34,11 +39,11 @@ public class UserModel {
         this.role = role;
     }
 
-    public Long getIdUser() {
+    public UUID getIdUser() {
         return idUser;
     }
 
-    public void setIdUser(Long idUser) {
+    public void setIdUser(UUID idUser) {
         this.idUser = idUser;
     }
 

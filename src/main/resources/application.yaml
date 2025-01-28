@@ -1,8 +1,8 @@
 spring:
   config:
-    name: school
+    name: DepartmentManagement
   datasource:
-    url: jdbc:postgresql://localhost:5432/morgue
+    url: jdbc:postgresql://localhost:5432/DepartmentManagement
     username: postgres
     password: 123
     driver-class-name: org.postgresql.Driver

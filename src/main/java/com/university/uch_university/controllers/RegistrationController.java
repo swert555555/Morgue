@@ -32,7 +32,7 @@ public class RegistrationController {
             return "regis";
         }
         user.setActive(true);
-        user.setRole(RoleEnum.LOADER);
+        user.setRole(RoleEnum.USER);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return "redirect:/login";

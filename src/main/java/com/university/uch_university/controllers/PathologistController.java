@@ -16,7 +16,7 @@ import java.util.UUID;
 @Controller
 @RequestMapping("/pathologist")
 public class PathologistController {
-    @Autowired
+    /*@Autowired
     private CorpseRepository corpseRepository;
 
     @Autowired
@@ -50,13 +50,13 @@ public class PathologistController {
 
         return "pathologistPage";
     }
-/*
+*//*
     @PostMapping("/corpses/add")
     public String addCorpse(@ModelAttribute Corpse corpse) {
         corpse.setReceiptDate(LocalDateTime.now());
         corpseRepository.save(corpse);
         return "redirect:/pathologist";
-    }*/
+    }*//*
 
     @PostMapping("/corpses/{id}/edit")
     public String editCorpse(@PathVariable UUID id, @ModelAttribute Corpse corpse) {
@@ -135,5 +135,5 @@ public class PathologistController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUserName = authentication.getName();
         return userRepository.findByUsername(currentUserName);
-    }
+    }*/
 }

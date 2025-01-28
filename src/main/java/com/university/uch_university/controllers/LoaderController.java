@@ -15,7 +15,7 @@ import java.util.UUID;
 @Controller
 @RequestMapping("/loader")
 public class LoaderController {
-    @Autowired
+    /*@Autowired
     private CorpseRepository corpseRepository;
 
     @Autowired
@@ -48,5 +48,5 @@ public class LoaderController {
     public String deleteCorpse(@PathVariable UUID id) {
         corpseRepository.deleteById(id);
         return "redirect:/loader";
-    }
+    }*/
 }
