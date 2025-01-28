@@ -24,7 +24,7 @@ public class MainController {
     @GetMapping("/")
     public String home(Model model, Principal principal) {
         UserModel user = userRepository.findByUsername(principal.getName());
-        model.addAttribute("name", "Суита проджект");
+        model.addAttribute("name", "Система для управления кадрами в структурных подразделениях организации");
 
         String role = user.getRole().toString().toLowerCase(Locale.ROOT);
         model.addAttribute("role", role);
