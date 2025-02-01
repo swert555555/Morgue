@@ -13,18 +13,14 @@ public class Department {
     @Id
     @GeneratedValue
     private UUID id;
-
     @Column(unique = true, nullable = false)
     @NotBlank(message = "Название подразделения не может быть пустым")
     private String name;
-
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @ManyToOne
     @JoinColumn(name = "city_id", nullable = false)
     private City city;
-
-
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "parent_department_id")
     private Department parentDepartment;
 
@@ -44,6 +40,14 @@ public class Department {
         this.name = name;
     }
 
+    public City getCity() {
+        return city;
+    }
+
+    public void setCity(City city) {
+        this.city = city;
+    }
+
     public Department getParentDepartment() {
         return parentDepartment;
     }
@@ -55,9 +59,10 @@ public class Department {
     public Department() {
     }
 
-    public Department(UUID id, String name, Department parentDepartment) {
+    public Department(UUID id, String name, City city, Department parentDepartment) {
         this.id = id;
         this.name = name;
+        this.city = city;
         this.parentDepartment = parentDepartment;
     }
 }

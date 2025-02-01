@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Управление должностями</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <style>
+    .collapse {
+        display: none;
+    }
+    body {
+        margin: 0;
+        padding: 20px;
+        display: grid;
+        justify-content: between;
+        align-items: center;
+        overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+<h1>Управление сотрудниками</h1>
+<a href="/">На главную</a><br>
+
+<table>
+  <thead>
+  <tr>
+    <th>Имя</th>
+    <th>Фамилия</th>
+    <th>Дата назначния</th>
+    <th>Должность</th>
+    <th>Департамент</th>
+    <th>Аккаунт</th>
+    <th>Действия</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="employee : ${employees}">
+    <td th:text="${employee.firstName}"></td>
+    <td th:text="${employee.lastName}"></td>
+    <td th:text="${#temporals.format(employee.hireDate, 'dd.MM.yyyy')}"></td>
+    <td th:text="${employee.position.title}"></td>
+    <td th:text="${employee.department.name}"></td>
+    <td th:text="${employee.user}"></td>
+    <td>
+      <button type="button" class="btn btn-sm" data-toggle="collapse"
+              th:data-target="'#editForm' + ${employee.id}">
+        Редактировать
+      </button>
+      <form th:action="@{|/hr/employees/${employee.id}/delete|}" method="post"
+            style="display:inline;">
+        <button type="submit" class="btn btn-sm btn-outline-danger">
+          Дропнуть
+        </button>
+      </form>
+    </td>
+    <div class="collapse ms-2 me-auto" th:id="'editForm' + ${employee.id}">
+      <form th:action="@{|/hr/employees/${employee.id}/edit|}" method="post" th:object="${employee}" style="display:inline;">
+        <label for="firstName_edit">Имя:</label>
+        <input type="text" id="firstName_edit" name="firstName" th:value="${employee.firstName}" required><br>
+        <label for="lastName_edit">Фамилия:</label>
+        <input type="text" id="lastName_edit" name="lastName" th:value="${employee.lastName}" required><br>
+        <label for="position_edit">Должность:</label>
+        <select id="position_edit" name="position.id" required>
+          <option th:each="position : ${positions}" th:value="${position.id}" th:text="${position.title}"></option>
+        </select>
+        <br>
+        <label for="department_edit">Департамент:</label>
+        <select id="department_edit" name="department.id" required>
+          <option th:each="department : ${departments}" th:value="${department.id}" th:text="${department.name}" ></option>
+          <!--          th:selected="${department.id == employee.department.id}"-->
+        </select>
+        <br>
+        <label for="user_edit">Профиль пользователя:</label>
+        <select id="user_edit" name="user.id">
+          <option value="">Нет</option>
+          <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.username}"></option>
+        </select>
+        <br>
+        <label for="changeType_edit">Тип изменения:</label>
+        <select id="changeType_edit" name="changeTypeId" required>
+          <option th:each="changeType : ${changeTypes}" th:value="${changeType.id}" th:text="${changeType.name}"></option>
+        </select>
+        <br>
+        <!-- Скрытое поле для передачи changeTypeId -->
+        <input type="hidden" name="changeTypeId" th:value="${changeTypeId}">
+        <button type="submit" class="btn">Сохранить</button>
+      </form>
+    </div>
+  </tr>
+  </tbody>
+</table>
+<br>
+<h4>Добавить нового сотрудника</h4>
+<form action="/hr/employees/add" method="post" th:object="${employee}">
+  <label for="firstName">Имя:</label>
+  <input type="text" id="firstName" name="firstName" th:field="*{firstName}" required><br>
+  <label for="lastName">Фамилия:</label>
+  <input type="text" id="lastName" name="lastName" th:field="*{lastName}" required><br>
+
+  <label for="position">Должность:</label>
+  <select id="position" name="position.id" th:field="*{position.id}" required>
+    <option th:each="position : ${positions}" th:value="${position.id}" th:text="${position.title}"></option>
+  </select>
+  <br>
+  <label for="department">Департамент:</label>
+  <select id="department" name="department.id" th:field="*{department.id}">
+    <option th:each="department : ${departments}" th:value="${department.id}" th:text="${department.name}"></option>
+  </select>
+  <br>
+  <button type="submit" class="btn">Добавить</button>
+</form>
+
+<br>
+
+<h4>История изменений сотрудников</h4>
+<table>
+  <thead>
+  <tr>
+    <th>Сотрудник</th>
+    <th>Тип изменения</th>
+    <th>Дата изменения</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="history : ${employeeHistory}">
+    <td th:text="${history.employee.firstName + ' ' + history.employee.lastName}"></td>
+    <td th:text="${history.changeType.name}"></td>
+    <td th:text="${#temporals.format(history.changeDate, 'dd.MM.yyyy')}"></td>
+  </tr>
+  </tbody>
+</table>
+</body>
+</html>

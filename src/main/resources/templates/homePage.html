@@ -1,41 +1,51 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Главная</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>Главная страница</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <style>
+        .collapse {
+            display: none;
+        }
         body {
-          font-family: Arial, sans-serif;
-          background-color: #f4f4f4;
-          margin: 0;
-          padding: 10px;
-          display: grid;
-          justify-content: center;
-
-          align-items: center;
-          height: 100vh;
+            margin: 0;
+            padding: 20px;
+            display: grid;
+            justify-content: between;
+            align-items: center;
+            overflow-y: auto;
         }
     </style>
 </head>
 <body>
 <div>
+    <h2>Добро пожаловать, </h2>
+    <p th:text="${name}"></p>
+    <p>Ваша роль: <span th:text="${role}"></span></p>
+</div>
 
 
-    <div class="container text-center">
-        <h3 th:text="${name}"/>
-        <h5 th:text="'Ваша роль: ' + ${role}"></h5>
-    </div>
-    <div class="row align-items-center">
-        <div class="col col-12 text-center" th:if="${role=='loader' || role=='pathologist'}">
-            <a th:href="@{|/${role}|}" class="btn btn-outline-dark">Перейти в морг</a>
-        </div>
-    </div>
-    <div class="row align-items-center">
-        <div class="col col-12 text-center" th:if="${role=='admin'}">
-            <a href="/admin/users" class="btn btn-outline-dark">Управление персоналом</a>
-        </div>
-    </div>
+<div th:if="${role == 'admin'}">
+    <a href="/admin/positions">Управление должностями</a><br>
+    <a href="/admin/departments">Управление подразделениями</a><br>
+    <a href="/admin/changeTypes">Управление типами изменений</a><br>
+    <a href="/admin/cities">Управление городами</a><br>
+</div>
+
+<div th:if="${role == 'hr_manager'}">
+    <a href="/hr/employees">Управление сотрудниками</a><br>
+</div>
+
+<!--<div th:if="${role == 'user'}">-->
+    <a href="/profile">Мой профиль</a><br>
+<!--</div>-->
+<div>
+    <br>
+    <form action="/logout" method="post">
+        <button type="submit" class="btn">Выйти из аккаунта</button>
+    </form>
 </div>
 
 </body>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Управление департаментами</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <style>
+        .collapse {
+            display: none;
+        }
+        body {
+            margin: 0;
+            padding: 20px;
+            display: grid;
+            justify-content: between;
+            align-items: center;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+<h1>Управление департаментами</h1>
+<a href="/">На главную</a><br>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Название</th>
+        <th>Город</th>
+        <th>Родительский департамент</th>
+        <th>Действия</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="department : ${departments}">
+        <td th:text="${department.name}"></td>
+        <td th:text="${department.city.name}"></td>
+        <td th:text="${department.parentDepartment != null} ? ${department.parentDepartment.name} : ''"></td>
+        <td>
+            <button type="button" class="btn btn-sm" data-toggle="collapse"
+                    th:data-target="'#editForm' + ${department.id}">
+                Редактировать
+            </button>
+            <form th:action="@{|/admin/departments/${department.id}/delete|}" method="post"
+                  style="display:inline;">
+                <button type="submit" class="btn btn-sm btn-outline-danger">
+                    Дропнуть
+                </button>
+            </form>
+        </td>
+
+        <div class="collapse ms-2 me-auto" th:id="'editForm' + ${department.id}">
+            <br>
+            <form th:action="@{|/admin/departments/${department.id}/edit|}" method="post"
+                  style="display:inline;">
+                <label for="name_edit">Название</label>
+                <input type="text" th:value="${department.name}" name="name" id="name_edit" required>
+                <label for="city_edit">Город</label>
+                <select id="city_edit" name="city.id" required>
+                    <option th:each="city : ${cities}" th:value="${city.id}" th:text="${city.name}"></option>
+                </select>
+                <label for="parentDepartment_edit">Родительский департамент</label>
+                <select id="parentDepartment_edit" name="parentDepartment.id">
+                    <option value="">Нет</option>
+                    <option th:each="dept : ${departments}" th:value="${dept.id}" th:text="${dept.name}"></option>
+                </select>
+                <button type="submit" class="btn">Сохранить</button>
+            </form>
+        </div>
+    </tr>
+    </tbody>
+</table>
+<br>
+
+<h4>Добавить новый</h4>
+<form action="/admin/departments/add" method="post" th:object="${department}">
+    <label for="name">Название:</label>
+    <input type="text" id="name" name="name" th:field="*{name}" required><br>
+
+    <label for="city">Город:</label>
+    <select id="city" name="city.id" th:field="*{city.id}" required>
+        <option th:each="city : ${cities}" th:value="${city.id}" th:text="${city.name}"></option>
+    </select>
+    <br>
+
+    <label for="parentDepartment">Родительский департамент:</label>
+    <select id="parentDepartment" name="parentDepartment.id" th:field="*{parentDepartment.id}">
+        <option value="">Нет</option>
+        <option th:each="dept : ${departments}" th:value="${dept.id}" th:text="${dept.name}"></option>
+    </select>
+    <br>
+
+    <button type="submit" class="btn">Добавить</button>
+</form>
+</body>
+</html>

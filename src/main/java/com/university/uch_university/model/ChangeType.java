@@ -11,7 +11,6 @@ public class ChangeType {
     @Id
     @GeneratedValue
     private UUID id;
-
     @Column(unique = true, nullable = false)
     @NotBlank(message = "Название типа изменения не может быть пустым")
     private String name;
@@ -19,21 +18,16 @@ public class ChangeType {
     public UUID getId() {
         return id;
     }
-
     public void setId(UUID id) {
         this.id = id;
     }
-
     public @NotBlank(message = "Название типа изменения не может быть пустым") String getName() {
         return name;
     }
-
     public void setName(@NotBlank(message = "Название типа изменения не может быть пустым") String name) {
         this.name = name;
     }
-
     public ChangeType(){}
-
     public ChangeType(UUID id, String name) {
         this.id = id;
         this.name = name;

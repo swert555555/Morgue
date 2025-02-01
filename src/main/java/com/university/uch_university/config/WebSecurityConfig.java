@@ -4,6 +4,9 @@ import com.university.uch_university.model.RoleEnum;
 import com.university.uch_university.model.UserModel;
 import com.university.uch_university.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
+import org.apache.catalina.security.SecurityConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +21,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import java.util.Collections;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -64,18 +68,33 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
         http.authorizeHttpRequests(authorize ->
-                        authorize.requestMatchers("/api/**", "/login", "/registration").permitAll()
+                        authorize.requestMatchers("/api/**", "/user/**", "/login", "/registration", "/static/styles.css").permitAll()
                                 .requestMatchers("/admin/**").hasAuthority("ADMIN")
-                                .requestMatchers("/pathologist/**").hasAuthority("PATHOLOGIST")
-                                .requestMatchers("/loader/**").hasAuthority("LOADER")
+                                .requestMatchers("/hr/**").hasAuthority("HR_MANAGER")
+//                                .requestMatchers("/user/**").hasAuthority("USER")
                                 .anyRequest().authenticated())
 
-                .formLogin(form -> form.loginPage("/login").defaultSuccessUrl("/").permitAll())
-                .logout(logout -> logout.permitAll())
+                .formLogin(form -> form.loginPage("/login").defaultSuccessUrl("/", true)
+                        .successHandler((request, response, authentication) -> {
+                            logger.info("Пользователь {} успешно вошел в систему.", authentication.getName());
+                            response.sendRedirect("/");
+                        })
+                        .failureHandler((request, response, exception) -> {
+                            logger.error("Ошибка входа: {}", exception.getMessage());
+                            response.sendRedirect("/login?error");
+                        })
+                        .permitAll())
+                .logout(logout -> logout
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            logger.info("Пользователь {} вышел из системы.", authentication.getName());
+                            response.sendRedirect("/login");
+                        })
+                        .permitAll())
+                .exceptionHandling(exception -> exception.accessDeniedPage("/error"))
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.disable());
-
         return http.build();
     }
 }

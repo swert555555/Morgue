@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.UUID;
 
 public interface ChangeTypeRepository extends JpaRepository<ChangeType, UUID> {
+    ChangeType findByName(String name);
 }

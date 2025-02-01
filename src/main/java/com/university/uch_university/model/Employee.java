@@ -2,7 +2,9 @@ package com.university.uch_university.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -15,12 +17,17 @@ public class Employee {
     private String firstName;
     @NotBlank(message = "Фамилия не может быть пустым")
     private String lastName;
+    @NotNull(message = "Дата изменения не может быть пустой")
+    private LocalDateTime hireDate;
     @ManyToOne
     @JoinColumn(name = "position_id", nullable = false)
     private Position position;
     @ManyToOne
     @JoinColumn(name = "department_id", nullable = false)
     private Department department;
+    @OneToOne
+    @JoinColumn(name = "user_id", unique = true, nullable = true)
+    private UserModel user;
 
     public UUID getId() {
         return id;
@@ -52,14 +59,28 @@ public class Employee {
     public void setDepartment(Department department) {
         this.department = department;
     }
+    public @NotNull(message = "Дата изменения не может быть пустой") LocalDateTime getHireDate() {
+        return hireDate;
+    }
+    public void setHireDate(@NotNull(message = "Дата изменения не может быть пустой") LocalDateTime hireDate) {
+        this.hireDate = hireDate;
+    }
+    public UserModel getUser() {
+        return user;
+    }
+    public void setUser(UserModel user) {
+        this.user = user;
+    }
 
     public Employee() {}
 
-    public Employee(UUID id, String firstName, String lastName, Position position, Department department) {
+    public Employee(UUID id, String firstName, String lastName, LocalDateTime hireDate, Position position, Department department, UserModel user) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.position = position;
         this.department = department;
+        this.hireDate = hireDate;
+        this.user = user;
     }
 }

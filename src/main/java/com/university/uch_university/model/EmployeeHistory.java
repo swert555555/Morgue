@@ -26,8 +26,6 @@ public class EmployeeHistory {
     @NotNull(message = "Дата изменения не может быть пустой")
     private LocalDateTime changeDate;
 
-    private String description;
-
     public UUID getId() {
         return id;
     }
@@ -52,20 +50,12 @@ public class EmployeeHistory {
     public void setChangeDate(@NotNull(message = "Дата изменения не может быть пустой") LocalDateTime changeDate) {
         this.changeDate = changeDate;
     }
-    public String getDescription() {
-        return description;
-    }
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
-    public EmployeeHistory(UUID id, Employee employee, ChangeType changeType, LocalDateTime changeDate, String description) {
+    public EmployeeHistory(UUID id, Employee employee, ChangeType changeType, LocalDateTime changeDate) {
         this.id = id;
         this.employee = employee;
         this.changeType = changeType;
         this.changeDate = changeDate;
-        this.description = description;
     }
-
     public EmployeeHistory() {  }
 }
