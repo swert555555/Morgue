@@ -4,6 +4,21 @@
     <meta charset="UTF-8">
     <title>Мой профиль</title>
     <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            display: grid;
+            justify-content: between;
+            align-items: center;
+            overflow-y: auto;
+        }
+    </style>
 </head>
 <body>
 <h1>Мой профиль</h1>
@@ -11,19 +26,18 @@
 
 <p>Имя пользователя: <span th:text="${user.username}"></span></p>
 
-<h2>Изменить данные</h2>
+<h4>Изменить данные</h4>
 <form action="/profile" method="post">
     <label for="username">Имя пользователя:</label>
     <input type="text" id="username" name="username" th:value="${user.username}" required><br>
     <label for="password">Новый пароль:</label>
     <input type="password" id="password" name="password"><br>
-    <button type="submit">Сохранить</button>
+    <button type="submit" class="btn">Сохранить</button>
 </form>
-
-<h2>Моя информация как сотрудника</h2>
-<div th:if="${employee != null}">
-    <p>Имя: <span th:text="${employee.firstName}"></span></p>
-    <p>Фамилия: <span th:text="${employee.lastName}"></span></p>
+<br>
+<h4>Моя информация как сотрудника</h4>
+<div th:if="${employee != null}" >
+    <p>Имя Фамилия: <span th:text="${employee.firstName}"></span> <span th:text="${employee.lastName}"></span></p>
     <p>Должность: <span th:text="${employee.position.title}"></span></p>
     <p>Департамент: <span th:text="${employee.department.name}"></span></p>
 </div>

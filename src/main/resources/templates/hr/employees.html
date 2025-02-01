@@ -43,10 +43,11 @@
   <tr th:each="employee : ${employees}">
     <td th:text="${employee.firstName}"></td>
     <td th:text="${employee.lastName}"></td>
-    <td th:text="${#temporals.format(employee.hireDate, 'dd.MM.yyyy')}"></td>
+    <td th:text="${#temporals.format(employee.hireDate, 'dd.MM.yyyy - HH:mm')}"></td>
     <td th:text="${employee.position.title}"></td>
     <td th:text="${employee.department.name}"></td>
-    <td th:text="${employee.user}"></td>
+    <td th:text="${employee.user != null} ? ${employee.user.username} : ''"></td>
+
     <td>
       <button type="button" class="btn btn-sm" data-toggle="collapse"
               th:data-target="'#editForm' + ${employee.id}">
@@ -76,8 +77,8 @@
           <!--          th:selected="${department.id == employee.department.id}"-->
         </select>
         <br>
-        <label for="user_edit">Профиль пользователя:</label>
-        <select id="user_edit" name="user.id">
+        <label for="userId">Профиль пользователя:</label>
+        <select id="userId" name="userId">
           <option value="">Нет</option>
           <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.username}"></option>
         </select>
@@ -89,6 +90,7 @@
         <br>
         <!-- Скрытое поле для передачи changeTypeId -->
         <input type="hidden" name="changeTypeId" th:value="${changeTypeId}">
+        <input type="hidden" name="userId" th:value="${userId}">
         <button type="submit" class="btn">Сохранить</button>
       </form>
     </div>
@@ -102,7 +104,6 @@
   <input type="text" id="firstName" name="firstName" th:field="*{firstName}" required><br>
   <label for="lastName">Фамилия:</label>
   <input type="text" id="lastName" name="lastName" th:field="*{lastName}" required><br>
-
   <label for="position">Должность:</label>
   <select id="position" name="position.id" th:field="*{position.id}" required>
     <option th:each="position : ${positions}" th:value="${position.id}" th:text="${position.title}"></option>
@@ -131,7 +132,7 @@
   <tr th:each="history : ${employeeHistory}">
     <td th:text="${history.employee.firstName + ' ' + history.employee.lastName}"></td>
     <td th:text="${history.changeType.name}"></td>
-    <td th:text="${#temporals.format(history.changeDate, 'dd.MM.yyyy')}"></td>
+    <td th:text="${#temporals.format(history.changeDate, 'dd.MM.yyyy - HH:mm')}"></td>
   </tr>
   </tbody>
 </table>

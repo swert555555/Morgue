@@ -60,25 +60,17 @@ public class HRManagerController {
         employeeHistoryRepository.save(history);
         return "redirect:/hr/employees";
     }
+
     @PostMapping("/employees/{id}/edit")
-    public String editEmployee(@PathVariable UUID id, @ModelAttribute Employee employee,
-                               @RequestParam UUID changeTypeId,
-                               @RequestParam(required = false) UUID userId) {
+    public String editEmployee(@PathVariable UUID id, @ModelAttribute Employee employee, @RequestParam UUID changeTypeId, @RequestParam(required = false) UUID userId) {
         try {
-            // Устанавливаем ID сотрудника
             employee.setId(id);
-            // Устанавливаем дату найма
             employee.setHireDate(LocalDateTime.now());
-            // Устанавливаем пользователя, если userId предоставлен
             if (userId != null) {
                 UserModel user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
                 employee.setUser(user);
-            } else {
-                employee.setUser(null);
-            }
-            // Сохраняем сотрудника
+            } else employee.setUser(null);
             employeeRepository.save(employee);
-            // Создаем и сохраняем историю изменений
             EmployeeHistory history = new EmployeeHistory();
             history.setEmployee(employee);
             history.setChangeType(changeTypeRepository.findById(changeTypeId).orElseThrow(() -> new RuntimeException("Change type not found")));

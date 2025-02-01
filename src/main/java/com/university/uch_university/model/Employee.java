@@ -25,7 +25,7 @@ public class Employee {
     @ManyToOne
     @JoinColumn(name = "department_id", nullable = false)
     private Department department;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", unique = true, nullable = true)
     private UserModel user;
 
