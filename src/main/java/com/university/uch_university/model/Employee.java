@@ -1,5 +1,8 @@
 package com.university.uch_university.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerator;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -19,12 +22,15 @@ public class Employee {
     private String lastName;
     @NotNull(message = "Дата изменения не может быть пустой")
     private LocalDateTime hireDate;
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @ManyToOne
     @JoinColumn(name = "position_id", nullable = false)
     private Position position;
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @ManyToOne
     @JoinColumn(name = "department_id", nullable = false)
     private Department department;
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", unique = true, nullable = true)
     private UserModel user;
